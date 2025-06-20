@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <title>worktrekproxy5g</title>
+    <title>worktrekproxy5G</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,8 +19,6 @@
         --text-color: #ffffff;
         --border-radius: 15px;
         --animation-speed: 1.5s;
-        --button-bg: #007bff; /* Button blue */
-        --button-hover-bg: #0056b3;
       }
 
       body {
@@ -92,6 +90,10 @@
         text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
       }
 
+      h1 strong { /* New style for bold text within h1 */
+          font-weight: 700; /* Cairo font already handles this well */
+      }
+
       .content-area {
         min-height: 150px; /* To prevent layout shift */
         display: flex;
@@ -100,9 +102,7 @@
         justify-content: center;
       }
 
-      .initial-prompt {
-        display: block;
-      }
+      /* No initial-prompt class needed as it's now automatic */
 
       .loader-wrapper {
         position: relative;
@@ -144,33 +144,8 @@
         color: rgba(255, 255, 255, 0.9);
       }
 
-      .action-button {
-        background-color: var(--button-bg);
-        color: var(--text-color);
-        border: none;
-        padding: 15px 30px;
-        font-size: 1.2em;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-top: 30px;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        font-family: 'Cairo', sans-serif;
-        font-weight: 700;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      }
-
-      .action-button:hover {
-        background-color: var(--button-hover-bg);
-        transform: translateY(-2px);
-      }
-
-      .action-button:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      }
-
       .message-display {
-        display: none;
+        display: none; /* Hidden initially */
         font-size: 1.8em;
         color: var(--primary-color);
         font-weight: 700;
@@ -181,6 +156,7 @@
           margin: 0;
           font-size: 1em;
       }
+
 
       @keyframes scaleIn {
         from { transform: scale(0.8); opacity: 0; }
@@ -222,10 +198,6 @@
         p {
           font-size: 1em;
         }
-        .action-button {
-            padding: 12px 25px;
-            font-size: 1.1em;
-        }
         .message-display {
             font-size: 1.5em;
         }
@@ -241,14 +213,7 @@
       <div class="particle"></div>
     </div>
     <div class="container">
-      <h1><span style="color: var(--primary-color);">worktrek</span>proxy5G</h1>
-
-      <div class="content-area">
-          <div class="initial-prompt" id="initialPrompt">
-            <p>الرجاء النقر على الزر أدناه لتغيير عنوان الـ IP الخاص بك.</p>
-            <button class="action-button" id="changeIpButton">تغيير الـ IP الآن</button>
-          </div>
-
+      <h1><strong>worktrekproxy5G</strong></h1> <div class="content-area">
           <div class="message-display" id="changingIpMessage">
             <div class="loader-wrapper">
               <div class="loader"></div>
@@ -266,24 +231,20 @@
     <iframe id="ipChangeFrame" name="ipChangeFrame"></iframe>
 
     <script>
-        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
+        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35LM8SToJ"; // رابط تغيير الـ IP الخاص بك
 
-        const initialPrompt = document.getElementById('initialPrompt');
-        const changeIpButton = document.getElementById('changeIpButton');
+        // const initialPrompt = document.getElementById('initialPrompt'); // لم نعد بحاجة إليه
+        // const changeIpButton = document.getElementById('changeIpButton'); // لم نعد بحاجة إليه
         const changingIpMessage = document.getElementById('changingIpMessage');
         const successMessage = document.getElementById('successMessage');
         const loaderText = changingIpMessage.querySelector('.loader-text');
         const ipChangeFrame = document.getElementById('ipChangeFrame');
 
-        // Hide all messages initially except the initial prompt
-        changingIpMessage.style.display = 'none';
+        // Hide success message initially
         successMessage.style.display = 'none';
 
-        // Event listener for the button click
-        changeIpButton.addEventListener('click', function() {
-            // Hide the initial prompt
-            initialPrompt.style.display = 'none';
-
+        // Function to start the IP change process
+        function startIpChangeProcess() {
             // Show the "changing IP" message with loader
             changingIpMessage.style.display = 'block';
 
@@ -301,22 +262,15 @@
                     // After countdown, hide changing message and show success message
                     changingIpMessage.style.display = 'none';
                     successMessage.style.display = 'block';
-                    // Optional: You could even remove the iframe from DOM after it's done
-                    // ipChangeFrame.remove();
                 }
             }
 
-            // Start the countdown when the button is clicked
+            // Start the countdown immediately
             updateLoaderCountdown();
-        });
+        }
 
-        // Optional: If you want to handle cases where the iframe loading fails or finishes quickly
-        // ipChangeFrame.onload = function() {
-        //     // This fires when the iframe content (localtonet.com) finishes loading
-        //     // You could use this to adjust the timing of the "تم تغيير الآي بي" message
-        //     // However, for most simple cases, a fixed timeout is fine.
-        //     console.log("IP change iframe loaded.");
-        // };
+        // Start the process automatically when the page loads
+        document.addEventListener('DOMContentLoaded', startIpChangeProcess);
     </script>
   </body>
 </html>
