@@ -92,8 +92,16 @@
         text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
       }
 
-      .initial-content { /* Container for initial loading elements */
-        display: block; /* Initially visible */
+      .content-area {
+        min-height: 150px; /* To prevent layout shift */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .initial-prompt {
+        display: block;
       }
 
       .loader-wrapper {
@@ -161,18 +169,33 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       }
 
-      .success-message {
-        display: none; /* Hidden initially */
+      .message-display {
+        display: none;
         font-size: 1.8em;
-        color: var(--primary-color); /* Green for success */
+        color: var(--primary-color);
         font-weight: 700;
         margin-top: 30px;
         animation: scaleIn 0.5s ease-out forwards;
+      }
+      .message-display p {
+          margin: 0;
+          font-size: 1em;
       }
 
       @keyframes scaleIn {
         from { transform: scale(0.8); opacity: 0; }
         to { transform: scale(1); opacity: 1; }
+      }
+
+      /* iframe for background loading */
+      #ipChangeFrame {
+          position: absolute; /* Hide it completely */
+          top: -9999px;
+          left: -9999px;
+          width: 1px;
+          height: 1px;
+          opacity: 0;
+          pointer-events: none;
       }
 
       /* Responsive adjustments */
@@ -203,7 +226,7 @@
             padding: 12px 25px;
             font-size: 1.1em;
         }
-        .success-message {
+        .message-display {
             font-size: 1.5em;
         }
       }
@@ -220,59 +243,80 @@
     <div class="container">
       <h1><span style="color: var(--primary-color);">worktrek</span>proxy5G</h1>
 
-      <div class="initial-content" id="initialContent">
-        <div class="loader-wrapper">
-          <div class="loader"></div>
-          <div class="loader-text"></div>
-        </div>
-        <p>الرجاء النقر على الزر أدناه لتغيير عنوان الـ IP الخاص بك.</p>
-        <button class="action-button" id="changeIpButton">تغيير الـ IP الآن</button>
-      </div>
+      <div class="content-area">
+          <div class="initial-prompt" id="initialPrompt">
+            <p>الرجاء النقر على الزر أدناه لتغيير عنوان الـ IP الخاص بك.</p>
+            <button class="action-button" id="changeIpButton">تغيير الـ IP الآن</button>
+          </div>
 
-      <div class="success-message" id="successMessage">
-        <p>تم تغيير الآي بي بنجاح!</p>
+          <div class="message-display" id="changingIpMessage">
+            <div class="loader-wrapper">
+              <div class="loader"></div>
+              <div class="loader-text"></div>
+            </div>
+            <p>يتم تغيير الآي بي...</p>
+          </div>
+
+          <div class="message-display" id="successMessage">
+            <p>تم تغيير الآي بي بنجاح!</p>
+          </div>
       </div>
     </div>
 
+    <iframe id="ipChangeFrame" name="ipChangeFrame"></iframe>
+
     <script>
-        const initialContent = document.getElementById('initialContent');
-        const successMessage = document.getElementById('successMessage');
+        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
+
+        const initialPrompt = document.getElementById('initialPrompt');
         const changeIpButton = document.getElementById('changeIpButton');
-        const loaderText = document.querySelector('.loader-text');
+        const changingIpMessage = document.getElementById('changingIpMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loaderText = changingIpMessage.querySelector('.loader-text');
+        const ipChangeFrame = document.getElementById('ipChangeFrame');
 
-        // Optional: Simulate an initial "loading" count before showing the button
-        // If you want the button to appear immediately, remove this part
-        let initialCounter = 3; 
-        function updateInitialLoader() {
-            loaderText.textContent = initialCounter;
-            if (initialCounter > 0) {
-                initialCounter--;
-                setTimeout(updateInitialLoader, 1000); // Countdown for 3 seconds
-            } else {
-                // Hide loader and show button (if needed, but button is always there now)
-                // You can add more complex initial animations here if desired
-                loaderText.style.display = 'none'; // Hide numbers if not needed after count
-                document.querySelector('.loader').style.display = 'none'; // Hide spinner
-                // Or simply let them show until the button is clicked,
-                // and the click event will handle hiding.
-            }
-        }
-        document.addEventListener('DOMContentLoaded', updateInitialLoader);
-
+        // Hide all messages initially except the initial prompt
+        changingIpMessage.style.display = 'none';
+        successMessage.style.display = 'none';
 
         // Event listener for the button click
         changeIpButton.addEventListener('click', function() {
-            // Hide the initial content (loader, initial text, button)
-            initialContent.style.display = 'none';
+            // Hide the initial prompt
+            initialPrompt.style.display = 'none';
 
-            // Show the success message
-            successMessage.style.display = 'block';
+            // Show the "changing IP" message with loader
+            changingIpMessage.style.display = 'block';
 
-            // Optional: You can trigger the actual IP change action here if you have a backend
-            // For example:
-            // window.location.href = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ";
-            // But based on your request, you just want to show the message.
+            // Start the actual IP change process in the hidden iframe
+            ipChangeFrame.src = ipChangeUrl; // Loads the URL into the hidden iframe
+
+            let countdown = 3; // Simulate a 3-second process (adjust if actual IP change takes longer)
+
+            function updateLoaderCountdown() {
+                loaderText.textContent = countdown;
+                if (countdown > 0) {
+                    countdown--;
+                    setTimeout(updateLoaderCountdown, 1000); // Update every second
+                } else {
+                    // After countdown, hide changing message and show success message
+                    changingIpMessage.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    // Optional: You could even remove the iframe from DOM after it's done
+                    // ipChangeFrame.remove();
+                }
+            }
+
+            // Start the countdown when the button is clicked
+            updateLoaderCountdown();
         });
+
+        // Optional: If you want to handle cases where the iframe loading fails or finishes quickly
+        // ipChangeFrame.onload = function() {
+        //     // This fires when the iframe content (localtonet.com) finishes loading
+        //     // You could use this to adjust the timing of the "تم تغيير الآي بي" message
+        //     // However, for most simple cases, a fixed timeout is fine.
+        //     console.log("IP change iframe loaded.");
+        // };
     </script>
   </body>
 </html>
