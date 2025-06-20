@@ -19,6 +19,9 @@
         --text-color: #ffffff;
         --border-radius: 15px;
         --animation-speed: 1.5s;
+        --fire-color1: #ff4500; /* OrangeRed */
+        --fire-color2: #ffa500; /* Orange */
+        --fire-color3: #ffd700; /* Gold */
       }
 
       body {
@@ -32,10 +35,11 @@
         min-height: 100vh;
         margin: 0;
         text-align: center;
-        overflow: hidden;
-        position: relative;
+        overflow: hidden; /* Ensure no scrollbars from effects */
+        position: relative; /* For absolute positioning of effects */
       }
 
+      /* Background particles effect */
       .background-particles {
         position: absolute;
         width: 100%;
@@ -64,13 +68,74 @@
         100% { transform: translateY(-100vh) translateX(50vw) scale(1.5); opacity: 0; }
       }
 
+      /* Fire Effect Styles */
+      .fire-effect {
+          position: absolute;
+          width: 150px; /* Width of the fire base */
+          height: 100%; /* Cover full height */
+          bottom: 0;
+          z-index: 0; /* Behind the container */
+          display: flex;
+          flex-direction: column-reverse; /* Flames rise up */
+          overflow: hidden;
+          pointer-events: none; /* Do not block mouse events */
+      }
+      .fire-left {
+          left: 0;
+      }
+      .fire-right {
+          right: 0;
+      }
+
+      .flame {
+          position: relative;
+          width: 100%;
+          height: 50px; /* Base height of a flame segment */
+          border-radius: 50% 50% 0 0;
+          opacity: 0;
+          animation: ignite 5s infinite; /* Base animation for fire */
+          filter: blur(5px); /* Soften the edges */
+      }
+      .flame:nth-child(1) { background-color: var(--fire-color1); animation-delay: 0s; height: 80px; }
+      .flame:nth-child(2) { background-color: var(--fire-color2); animation-delay: 0.5s; height: 70px; }
+      .flame:nth-child(3) { background-color: var(--fire-color3); animation-delay: 1s; height: 60px; }
+      .flame:nth-child(4) { background-color: var(--fire-color1); animation-delay: 1.5s; height: 90px; }
+      .flame:nth-child(5) { background-color: var(--fire-color2); animation-delay: 2s; height: 75px; }
+
+      @keyframes ignite {
+          0% { transform: translateY(100px) scaleX(0.5) opacity(0); }
+          20% { transform: translateY(0) scaleX(1) opacity(0.8); }
+          80% { transform: translateY(-100px) scaleX(0.8) opacity(0.5); }
+          100% { transform: translateY(-200px) scaleX(0.3) opacity(0); }
+      }
+
+      /* Explosion Effect Styles (triggered by JS) */
+      .explosion-effect {
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: radial-gradient(circle at 50% 50%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 69, 0, 0.6) 50%, rgba(0, 0, 0, 0) 100%);
+          transform: translate(-50%, -50%); /* Center the explosion */
+          animation: none; /* Controlled by JS */
+          opacity: 0;
+          z-index: 2; /* Above container for a brief moment */
+      }
+
+      @keyframes explode {
+          0% { width: 0; height: 0; opacity: 0; }
+          10% { width: 200px; height: 200px; opacity: 1; filter: blur(0px); }
+          100% { width: 400px; height: 400px; opacity: 0; filter: blur(10px); }
+      }
+
+
       .container {
         background-color: rgba(0, 0, 0, 0.4);
         padding: 50px;
         border-radius: var(--border-radius);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         position: relative;
-        z-index: 1;
+        z-index: 1; /* Above particles and fire */
         animation: fadeIn 1s ease-out forwards;
         max-width: 90%;
         width: 500px;
@@ -220,10 +285,29 @@
         .additional-info {
             font-size: 0.85em;
         }
+        .fire-effect {
+            width: 80px; /* Smaller fire on mobile */
+        }
       }
     </style>
   </head>
   <body>
+    <div class="fire-effect fire-left">
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+    </div>
+
+    <div class="fire-effect fire-right">
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+    </div>
+
     <div class="background-particles">
       <div class="particle"></div>
       <div class="particle"></div>
@@ -231,8 +315,13 @@
       <div class="particle"></div>
       <div class="particle"></div>
     </div>
+
+    <div class="explosion-effect" id="explosionEffect"></div>
+
     <div class="container">
-      <h1><strong>WorkTrekProxy5G</strong></h1> <div class="content-area">
+      <h1><strong>WorkTrekProxy5G</strong></h1>
+
+      <div class="content-area">
           <div class="message-display" id="changingIpMessage">
             <div class="loader-wrapper">
               <div class="loader"></div>
@@ -257,20 +346,32 @@
         const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
 
         const changingIpMessage = document.getElementById('changingIpMessage');
-        const successContent = document.getElementById('successContent'); // Changed ID to hold all success content
+        const successContent = document.getElementById('successContent');
         const loaderText = changingIpMessage.querySelector('.loader-text');
         const ipChangeFrame = document.getElementById('ipChangeFrame');
+        const explosionEffect = document.getElementById('explosionEffect'); // Get the explosion element
 
         // Hide success content initially
         successContent.style.display = 'none';
 
         // Function to start the IP change process
         function startIpChangeProcess() {
+            // Trigger explosion animation at the center of the screen
+            explosionEffect.style.top = '50%';
+            explosionEffect.style.left = '50%';
+            explosionEffect.style.animation = 'explode 0.8s ease-out forwards'; // Play explosion animation
+            
+            // Remove animation class after it plays to allow re-triggering if needed (though not in this auto-scenario)
+            setTimeout(() => {
+                explosionEffect.style.animation = 'none';
+                explosionEffect.style.opacity = '0'; // Hide it after explosion
+            }, 800); // Duration of explode animation
+
             // Show the "changing IP" message with loader
             changingIpMessage.style.display = 'block';
 
             // Start the actual IP change process in the hidden iframe
-            ipChangeFrame.src = ipChangeUrl; // Loads the URL into the hidden iframe
+            ipChangeFrame.src = ipChangeUrl;
 
             let countdown = 3; // Simulate a 3-second process (adjust if actual IP change takes longer)
 
@@ -278,7 +379,7 @@
                 loaderText.textContent = countdown;
                 if (countdown > 0) {
                     countdown--;
-                    setTimeout(updateLoaderCountdown, 1000); // Update every second
+                    setTimeout(updateLoaderCountdown, 1000);
                 } else {
                     // After countdown, hide changing message and show success content
                     changingIpMessage.style.display = 'none';
