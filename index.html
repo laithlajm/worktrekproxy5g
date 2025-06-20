@@ -90,8 +90,8 @@
         text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
       }
 
-      h1 strong { /* New style for bold text within h1 */
-          font-weight: 700; /* Cairo font already handles this well */
+      h1 strong { /* Style for bold text within h1 */
+          font-weight: 700;
       }
 
       .content-area {
@@ -101,8 +101,6 @@
         align-items: center;
         justify-content: center;
       }
-
-      /* No initial-prompt class needed as it's now automatic */
 
       .loader-wrapper {
         position: relative;
@@ -136,17 +134,17 @@
         100% { transform: rotate(360deg); }
       }
 
-      p {
+      .main-text { /* General style for main paragraphs */
         font-size: 1.1em;
         line-height: 1.6;
         opacity: 0.9;
         margin-top: 25px;
         color: rgba(255, 255, 255, 0.9);
       }
-
+      
       .message-display {
         display: none; /* Hidden initially */
-        font-size: 1.8em;
+        font-size: 1.8em; /* Main success message size */
         color: var(--primary-color);
         font-weight: 700;
         margin-top: 30px;
@@ -154,9 +152,27 @@
       }
       .message-display p {
           margin: 0;
-          font-size: 1em;
+          font-size: 1em; /* Inherit parent font size for main message */
       }
 
+      .additional-info {
+          margin-top: 20px;
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.95em; /* Slightly smaller for additional info */
+          line-height: 1.5;
+      }
+
+      .additional-info a {
+          color: var(--secondary-color); /* Blue for links */
+          text-decoration: none;
+          font-weight: bold;
+          transition: color 0.3s ease;
+      }
+
+      .additional-info a:hover {
+          color: var(--primary-color);
+          text-decoration: underline;
+      }
 
       @keyframes scaleIn {
         from { transform: scale(0.8); opacity: 0; }
@@ -195,11 +211,14 @@
         .loader-text {
             font-size: 1em;
         }
-        p {
+        .main-text {
           font-size: 1em;
         }
         .message-display {
             font-size: 1.5em;
+        }
+        .additional-info {
+            font-size: 0.85em;
         }
       }
     </style>
@@ -219,11 +238,15 @@
               <div class="loader"></div>
               <div class="loader-text"></div>
             </div>
-            <p>يتم تغيير الآي بي...</p>
+            <p class="main-text">يتم تغيير الآي بي...</p>
           </div>
 
-          <div class="message-display" id="successMessage">
-            <p>تم تغيير الآي بي بنجاح!</p>
+          <div class="message-display" id="successContent">
+            <p class="main-text">تم تغيير الآي بي بنجاح!</p>
+            <div class="additional-info">
+                <p>انضم إلى قناة التلغرام الخاصة بنا: <a href="https://t.me/WorkTrekProxy5G" target="_blank">t.me/WorkTrekProxy5G</a></p>
+                <p>الادمن الاساسي: <a href="https://t.me/danialoc" target="_blank">t.me/danialoc</a></p>
+            </div>
           </div>
       </div>
     </div>
@@ -231,17 +254,15 @@
     <iframe id="ipChangeFrame" name="ipChangeFrame"></iframe>
 
     <script>
-        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35LM8SToJ"; // رابط تغيير الـ IP الخاص بك
+        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
 
-        // const initialPrompt = document.getElementById('initialPrompt'); // لم نعد بحاجة إليه
-        // const changeIpButton = document.getElementById('changeIpButton'); // لم نعد بحاجة إليه
         const changingIpMessage = document.getElementById('changingIpMessage');
-        const successMessage = document.getElementById('successMessage');
+        const successContent = document.getElementById('successContent'); // Changed ID to hold all success content
         const loaderText = changingIpMessage.querySelector('.loader-text');
         const ipChangeFrame = document.getElementById('ipChangeFrame');
 
-        // Hide success message initially
-        successMessage.style.display = 'none';
+        // Hide success content initially
+        successContent.style.display = 'none';
 
         // Function to start the IP change process
         function startIpChangeProcess() {
@@ -259,9 +280,9 @@
                     countdown--;
                     setTimeout(updateLoaderCountdown, 1000); // Update every second
                 } else {
-                    // After countdown, hide changing message and show success message
+                    // After countdown, hide changing message and show success content
                     changingIpMessage.style.display = 'none';
-                    successMessage.style.display = 'block';
+                    successContent.style.display = 'block';
                 }
             }
 
