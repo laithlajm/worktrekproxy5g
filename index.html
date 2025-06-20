@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <title>WorkTrekProxy5G</title>
+    <title>worktrekproxy5G</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,6 +23,8 @@
         --fire-color1: #ff4500; /* OrangeRed */
         --fire-color2: #ffa500; /* Orange */
         --fire-color3: #ffd700; /* Gold */
+        --explosion-color1: #ff8c00; /* DarkOrange */
+        --explosion-color2: #ff4500; /* OrangeRed */
       }
 
       body {
@@ -109,23 +112,25 @@
           100% { transform: translateY(-200px) scaleX(0.3) opacity(0); }
       }
 
-      /* Explosion Effect Styles (triggered by JS) */
+      /* Explosion Effect Styles (now larger and more central to the whole screen) */
       .explosion-effect {
-          position: absolute;
+          position: fixed; /* Use fixed to position relative to viewport */
           width: 0;
           height: 0;
           border-radius: 50%;
-          background: radial-gradient(circle at 50% 50%, rgba(255, 165, 0, 0.8) 0%, rgba(255, 69, 0, 0.6) 50%, rgba(0, 0, 0, 0) 100%);
-          transform: translate(-50%, -50%); /* Center the explosion */
+          background: radial-gradient(circle at 50% 50%, var(--explosion-color3) 0%, var(--explosion-color1) 50%, var(--explosion-color2) 75%, rgba(0, 0, 0, 0) 100%);
+          transform: translate(-50%, -50%); /* Center it precisely */
           animation: none; /* Controlled by JS */
           opacity: 0;
-          z-index: 2; /* Above container for a brief moment */
+          z-index: 1000; /* Make sure it's on top of everything temporarily */
+          filter: blur(5px); /* Add blur for a softer explosion */
       }
 
       @keyframes explode {
-          0% { width: 0; height: 0; opacity: 0; }
-          10% { width: 200px; height: 200px; opacity: 1; filter: blur(0px); }
-          100% { width: 400px; height: 400px; opacity: 0; filter: blur(10px); }
+          0% { width: 0; height: 0; opacity: 0; filter: blur(5px); }
+          5% { width: 100px; height: 100px; opacity: 0.8; filter: blur(3px); } /* Initial flash */
+          30% { width: 600px; height: 600px; opacity: 1; filter: blur(0px); } /* Full expansion */
+          100% { width: 1000px; height: 1000px; opacity: 0; filter: blur(20px); } /* Fading out and blurring */
       }
 
 
@@ -135,7 +140,7 @@
         border-radius: var(--border-radius);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         position: relative;
-        z-index: 1; /* Above particles and fire */
+        z-index: 1; /* Above particles and fire, but below explosion effect */
         animation: fadeIn 1s ease-out forwards;
         max-width: 90%;
         width: 500px;
@@ -319,7 +324,7 @@
     <div class="explosion-effect" id="explosionEffect"></div>
 
     <div class="container">
-      <h1><strong>WorkTrekProxy5G</strong></h1>
+      <h1><strong>worktrekproxy5G</strong></h1>
 
       <div class="content-area">
           <div class="message-display" id="changingIpMessage">
@@ -356,16 +361,17 @@
 
         // Function to start the IP change process
         function startIpChangeProcess() {
-            // Trigger explosion animation at the center of the screen
-            explosionEffect.style.top = '50%';
-            explosionEffect.style.left = '50%';
-            explosionEffect.style.animation = 'explode 0.8s ease-out forwards'; // Play explosion animation
+            // Position the explosion effect in the center of the viewport
+            // This ensures it appears 'outside' the container if the container is also centered
+            explosionEffect.style.left = window.innerWidth / 2 + 'px';
+            explosionEffect.style.top = window.innerHeight / 2 + 'px';
+            explosionEffect.style.animation = 'explode 1.2s ease-out forwards'; // Play explosion animation
             
             // Remove animation class after it plays to allow re-triggering if needed (though not in this auto-scenario)
             setTimeout(() => {
                 explosionEffect.style.animation = 'none';
                 explosionEffect.style.opacity = '0'; // Hide it after explosion
-            }, 800); // Duration of explode animation
+            }, 1200); // Duration of explode animation
 
             // Show the "changing IP" message with loader
             changingIpMessage.style.display = 'block';
@@ -393,6 +399,14 @@
 
         // Start the process automatically when the page loads
         document.addEventListener('DOMContentLoaded', startIpChangeProcess);
+
+        // Update explosion position if window resizes
+        window.addEventListener('resize', () => {
+            if (explosionEffect.style.animation !== 'none') { // Only adjust if animation is active
+                explosionEffect.style.left = window.innerWidth / 2 + 'px';
+                explosionEffect.style.top = window.innerHeight / 2 + 'px';
+            }
+        });
     </script>
   </body>
 </html>
