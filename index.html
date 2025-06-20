@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <title>worktrekproxy5G</title> <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="refresh" content="3;url=https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ" />
+    <title>worktrekproxy5g</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,19 +12,21 @@
     />
     <style>
       :root {
-        --primary-color: #4CAF50; /* A nice green */
+        --primary-color: #4CAF50; /* A nice green for success */
         --secondary-color: #2196F3; /* A calming blue */
         --dark-bg: #1a1a2e;
         --darker-bg: #0f0f1c;
         --text-color: #ffffff;
         --border-radius: 15px;
         --animation-speed: 1.5s;
+        --button-bg: #007bff; /* Button blue */
+        --button-hover-bg: #0056b3;
       }
 
       body {
         background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
         color: var(--text-color);
-        font-family: 'Cairo', sans-serif; /* Using a more modern Arabic font */
+        font-family: 'Cairo', sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -32,11 +34,10 @@
         min-height: 100vh;
         margin: 0;
         text-align: center;
-        overflow: hidden; /* Prevent scrollbar from animation */
+        overflow: hidden;
         position: relative;
       }
 
-      /* Background particles effect (optional, but adds a nice touch) */
       .background-particles {
         position: absolute;
         width: 100%;
@@ -66,17 +67,17 @@
       }
 
       .container {
-        background-color: rgba(0, 0, 0, 0.4); /* Slightly darker, more transparent */
+        background-color: rgba(0, 0, 0, 0.4);
         padding: 50px;
         border-radius: var(--border-radius);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Stronger, more defined shadow */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         position: relative;
-        z-index: 1; /* Ensure content is above particles */
+        z-index: 1;
         animation: fadeIn 1s ease-out forwards;
         max-width: 90%;
         width: 500px;
         box-sizing: border-box;
-        border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       @keyframes fadeIn {
@@ -85,10 +86,14 @@
       }
 
       h1 {
-        font-size: 2.2em; /* Larger heading */
+        font-size: 2.2em;
         margin-bottom: 25px;
         color: var(--primary-color);
-        text-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Subtle glow */
+        text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+      }
+
+      .initial-content { /* Container for initial loading elements */
+        display: block; /* Initially visible */
       }
 
       .loader-wrapper {
@@ -131,6 +136,45 @@
         color: rgba(255, 255, 255, 0.9);
       }
 
+      .action-button {
+        background-color: var(--button-bg);
+        color: var(--text-color);
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 30px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .action-button:hover {
+        background-color: var(--button-hover-bg);
+        transform: translateY(-2px);
+      }
+
+      .action-button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .success-message {
+        display: none; /* Hidden initially */
+        font-size: 1.8em;
+        color: var(--primary-color); /* Green for success */
+        font-weight: 700;
+        margin-top: 30px;
+        animation: scaleIn 0.5s ease-out forwards;
+      }
+
+      @keyframes scaleIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
       /* Responsive adjustments */
       @media (max-width: 600px) {
         .container {
@@ -155,6 +199,13 @@
         p {
           font-size: 1em;
         }
+        .action-button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+        }
+        .success-message {
+            font-size: 1.5em;
+        }
       }
     </style>
   </head>
@@ -167,30 +218,61 @@
       <div class="particle"></div>
     </div>
     <div class="container">
-      <h1><span style="color: var(--primary-color);">worktrek</span>proxy5G</h1> <div class="loader-wrapper">
-        <div class="loader"></div>
-        <div class="loader-text"></div>
+      <h1><span style="color: var(--primary-color);">worktrek</span>proxy5G</h1>
+
+      <div class="initial-content" id="initialContent">
+        <div class="loader-wrapper">
+          <div class="loader"></div>
+          <div class="loader-text"></div>
+        </div>
+        <p>الرجاء النقر على الزر أدناه لتغيير عنوان الـ IP الخاص بك.</p>
+        <button class="action-button" id="changeIpButton">تغيير الـ IP الآن</button>
       </div>
-      <p>
-        الرجاء الانتظار، سيتم تحويلك تلقائياً إلى الصفحة المطلوبة
-        خلال ثوانٍ قليلة.
-      </p>
+
+      <div class="success-message" id="successMessage">
+        <p>تم تغيير الآي بي بنجاح!</p>
+      </div>
     </div>
 
     <script>
+        const initialContent = document.getElementById('initialContent');
+        const successMessage = document.getElementById('successMessage');
+        const changeIpButton = document.getElementById('changeIpButton');
         const loaderText = document.querySelector('.loader-text');
-        let counter = 3; // Same as the meta refresh content
 
-        function updateLoaderText() {
-            loaderText.textContent = counter;
-            if (counter > 0) {
-                counter--;
-                setTimeout(updateLoaderText, 1000); // Update every second
+        // Optional: Simulate an initial "loading" count before showing the button
+        // If you want the button to appear immediately, remove this part
+        let initialCounter = 3; 
+        function updateInitialLoader() {
+            loaderText.textContent = initialCounter;
+            if (initialCounter > 0) {
+                initialCounter--;
+                setTimeout(updateInitialLoader, 1000); // Countdown for 3 seconds
+            } else {
+                // Hide loader and show button (if needed, but button is always there now)
+                // You can add more complex initial animations here if desired
+                loaderText.style.display = 'none'; // Hide numbers if not needed after count
+                document.querySelector('.loader').style.display = 'none'; // Hide spinner
+                // Or simply let them show until the button is clicked,
+                // and the click event will handle hiding.
             }
         }
+        document.addEventListener('DOMContentLoaded', updateInitialLoader);
 
-        // Start the countdown when the page loads
-        document.addEventListener('DOMContentLoaded', updateLoaderText);
+
+        // Event listener for the button click
+        changeIpButton.addEventListener('click', function() {
+            // Hide the initial content (loader, initial text, button)
+            initialContent.style.display = 'none';
+
+            // Show the success message
+            successMessage.style.display = 'block';
+
+            // Optional: You can trigger the actual IP change action here if you have a backend
+            // For example:
+            // window.location.href = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ";
+            // But based on your request, you just want to show the message.
+        });
     </script>
   </body>
 </html>
